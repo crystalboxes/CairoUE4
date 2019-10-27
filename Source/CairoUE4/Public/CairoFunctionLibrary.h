@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -26,6 +26,25 @@ enum class EFontWeight : uint8
 {
 	FONT_FONT_WEIGHT_NORMAL UMETA(DisplayName = "Normal"),
 	FONT_FONT_WEIGHT_BOLD UMETA(DisplayName = "Bold"),
+};
+
+USTRUCT(BlueprintType)
+struct FCairoMatrix
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite)
+	float xx = 0;
+	UPROPERTY(BlueprintReadWrite)
+	float yx = 0;
+	UPROPERTY(BlueprintReadWrite)
+	float xy = 0;
+	UPROPERTY(BlueprintReadWrite)
+	float yy = 0;
+	UPROPERTY(BlueprintReadWrite)
+	float x0 = 0;
+	UPROPERTY(BlueprintReadWrite)
+	float y0 = 0;
 };
 
 UENUM(BlueprintType)
@@ -123,51 +142,6 @@ class CAIROUE4_API UCairoFunctionLibrary : public UBlueprintFunctionLibrary
 	static void SetSourceRGB(UCairoContext *Context, float Red, float Green, float Blue);
 
 	UFUNCTION(BlueprintCallable, Category = "Cairo")
-	static void Paint(UCairoContext *Context);
-
-	UFUNCTION(BlueprintCallable, Category = "Cairo")
-	static void MoveTo(UCairoContext *Context, const FVector2D &Position);
-
-	UFUNCTION(BlueprintCallable, Category = "Cairo")
-	static void LineTo(UCairoContext *Context, const FVector2D &Position);
-
-	UFUNCTION(BlueprintCallable, Category = "Cairo")
-	static void Rectangle(UCairoContext *Context, const FVector2D &XY, const FVector2D &Size);
-
-	UFUNCTION(BlueprintCallable, Category = "Cairo")
-	static void Arc(UCairoContext *Context, const FVector2D &Center, float Radius, float Angle1, float Angle2);
-
-	UFUNCTION(BlueprintCallable, Category = "Cairo")
-	static void ArcNegative(UCairoContext *Context, const FVector2D &Center, float Radius, float Angle1, float Angle2);
-
-	UFUNCTION(BlueprintCallable, Category = "Cairo")
-	static void NewSubPath(UCairoContext *Context);
-
-	UFUNCTION(BlueprintCallable, Category = "Cairo")
-	static void ClosePath(UCairoContext *Context);
-
-	UFUNCTION(BlueprintCallable, Category = "Cairo")
-	static void Fill(UCairoContext *Context);
-
-	UFUNCTION(BlueprintCallable, Category = "Cairo")
-	static void Stroke(UCairoContext *Context);
-
-	UFUNCTION(BlueprintCallable, Category = "Cairo")
-	static void SelectFontFace(UCairoContext *Context, const FString &Family, EFontSlant Slant, EFontWeight Weight);
-
-	UFUNCTION(BlueprintCallable, Category = "Cairo")
-	static FVector2D TextExtents(UCairoContext *Context, const FString &Text);
-
-	UFUNCTION(BlueprintCallable, Category = "Cairo")
-	static void SetFontSize(UCairoContext *Context, float Size);
-
-	UFUNCTION(BlueprintCallable, Category = "Cairo")
-	static void ShowText(UCairoContext *Context, const FString &Text);
-
-	UFUNCTION(BlueprintCallable, Category = "Cairo")
-	static void RefreshContextTexture(UCairoContext *Context);
-
-	UFUNCTION(BlueprintCallable, Category = "Cairo")
 	static void SetOperator(UCairoContext *Context, ECairoOperator Operator);
 
 	UFUNCTION(BlueprintCallable, Category = "Cairo")
@@ -197,114 +171,199 @@ class CAIROUE4_API UCairoFunctionLibrary : public UBlueprintFunctionLibrary
 	UFUNCTION(BlueprintCallable, Category = "Cairo")
 	static void Translate(UCairoContext *Context, const FVector2D &Translation);
 
-	// TODO use fvector2d
 	UFUNCTION(BlueprintCallable, Category = "Cairo")
 	static void Scale(UCairoContext *Context, const FVector2D &Scale);
 
 	UFUNCTION(BlueprintCallable, Category = "Cairo")
 	static void Rotate(UCairoContext *Context, float Angle);
 
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void Transform(UCairoContext *Context, const FCairoMatrix &Matrix);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void SetMatrix(UCairoContext *Context, const FCairoMatrix &Matrix);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void IdentityMatrix(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static FVector2D UserToDevice(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static FVector2D UserToDeviceDistance(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static FVector2D DeviceToUser(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static FVector2D DeviceToUserDistance(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void NewPath(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void MoveTo(UCairoContext *Context, const FVector2D &Position);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void NewSubPath(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void LineTo(UCairoContext *Context, const FVector2D &Position);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void CurveTo(UCairoContext *Context, const FVector2D &P1, const FVector2D &P2, const FVector2D &P3);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void Arc(UCairoContext *Context, const FVector2D &Center, float Radius, float Angle1, float Angle2);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void ArcNegative(UCairoContext *Context, const FVector2D &Center, float Radius, float Angle1, float Angle2);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void RelMoveTo(UCairoContext *Context, const FVector2D &Position);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void RelLineTo(UCairoContext *Context, const FVector2D &Position);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void RelCurveTo(UCairoContext *Context, const FVector2D &P1, const FVector2D &P2, const FVector2D &P3);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void Rectangle(UCairoContext *Context, const FVector2D &XY, const FVector2D &Size);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void ClosePath(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void PathExtents(UCairoContext *Context, FVector2D &P1, FVector2D &P2);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void Paint(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void PaintWithAlpha(UCairoContext *Context, float Alpha);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void Stroke(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void StrokePreserve(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void Fill(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void FillPreserve(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void CopyPage(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void ShowPage(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void InStroke(UCairoContext *Context, const FVector2D &XY);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void InFill(UCairoContext *Context, const FVector2D &XY);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void InClip(UCairoContext *Context, const FVector2D &XY);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void StrokeExtents(UCairoContext *Context, FVector2D &P1, FVector2D &P2);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void FillExtents(UCairoContext *Context, FVector2D &P1, FVector2D &P2);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void ResetClip(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void Clip(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void ClipPreserve(UCairoContext *Context);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void ClipExtents(UCairoContext *Context, FVector2D &P1, FVector2D &P2);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void SelectFontFace(UCairoContext *Context, const FString &Family, EFontSlant Slant, EFontWeight Weight);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void SetFontSize(UCairoContext *Context, float Size);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void ShowText(UCairoContext *Context, const FString &Text);
+
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static FVector2D TextExtents(UCairoContext *Context, const FString &Text);
+
+	//cairo_public cairo_operator_t cairo_get_operator(cairo_t *cr);
+
+	//cairo_public cairo_pattern_t *cairo_get_source(cairo_t *cr);
+
+	//cairo_public double cairo_get_tolerance(cairo_t *cr);
+
+	//cairo_public cairo_antialias_t cairo_get_antialias(cairo_t *cr);
+
+	//cairo_public cairo_bool_t cairo_has_current_point(cairo_t *cr);
+
+	//cairo_public void cairo_get_current_point(cairo_t *cr, double *x, double *y);
+
+	//cairo_public cairo_fill_rule_t cairo_get_fill_rule(cairo_t *cr);
+
+	//cairo_public double cairo_get_line_width(cairo_t *cr);
+
+	//cairo_public cairo_line_cap_t cairo_get_line_cap(cairo_t *cr);
+
+	//cairo_public cairo_line_join_t cairo_get_line_join(cairo_t *cr);
+
+	//cairo_public double cairo_get_miter_limit(cairo_t *cr);
+
+	//cairo_public int cairo_get_dash_count(cairo_t *cr);
+
+	//cairo_public void cairo_get_dash(cairo_t *cr, double *dashes, double *offset);
+
+	//cairo_public void cairo_get_matrix(cairo_t *cr, cairo_matrix_t *matrix);
+
+	//cairo_public cairo_surface_t *cairo_get_target(cairo_t *cr);
+
+	//cairo_public cairo_surface_t *cairo_get_group_target(cairo_t *cr);
+
+
 	// TODO
-
-	// cairo_public void
-	// cairo_transform (cairo_t	      *cr,
-	// 		 const cairo_matrix_t *matrix);
-
-	// cairo_public void
-	// cairo_set_matrix (cairo_t	       *cr,
-	// 		  const cairo_matrix_t *matrix);
-
-	// cairo_public void
-	// cairo_identity_matrix (cairo_t *cr);
-
-	// cairo_public void
-	// cairo_user_to_device (cairo_t *cr, double *x, double *y);
-
-	// cairo_public void
-	// cairo_user_to_device_distance (cairo_t *cr, double *dx, double *dy);
-
-	// cairo_public void
-	// cairo_device_to_user (cairo_t *cr, double *x, double *y);
-
-	// cairo_public void
-	// cairo_device_to_user_distance (cairo_t *cr, double *dx, double *dy);
-
-	// /* Path creation functions */
-	// cairo_public void
-	// cairo_new_path (cairo_t *cr);
-
-	// cairo_public void
-	// cairo_move_to (cairo_t *cr, double x, double y);
-
-	// cairo_public void
-	// cairo_new_sub_path (cairo_t *cr);
-
-	// cairo_public void
-	// cairo_line_to (cairo_t *cr, double x, double y);
-
-	// cairo_public void
-	// cairo_curve_to (cairo_t *cr,
-	// 		double x1, double y1,
-	// 		double x2, double y2,
-	// 		double x3, double y3);
-
-	// cairo_public void
-	// cairo_arc (cairo_t *cr,
-	// 	   double xc, double yc,
-	// 	   double radius,
-	// 	   double angle1, double angle2);
-
-	// cairo_public void
-	// cairo_arc_negative (cairo_t *cr,
-	// 		    double xc, double yc,
-	// 		    double radius,
-	// 		    double angle1, double angle2);
-
-	// /* XXX: NYI
-	// cairo_public void
-	// cairo_arc_to (cairo_t *cr,
-	// 	      double x1, double y1,
-	// 	      double x2, double y2,
-	// 	      double radius);
-	// */
-
-	// cairo_public void
-	// cairo_rel_move_to (cairo_t *cr, double dx, double dy);
-
-	// cairo_public void
-	// cairo_rel_line_to (cairo_t *cr, double dx, double dy);
-
-	// cairo_public void
-	// cairo_rel_curve_to (cairo_t *cr,
-	// 		    double dx1, double dy1,
-	// 		    double dx2, double dy2,
-	// 		    double dx3, double dy3);
-
-	// cairo_public void
-	// cairo_rectangle (cairo_t *cr,
-	// 		 double x, double y,
-	// 		 double width, double height);
-
-	// /* XXX: NYI
-	// cairo_public void
-	// cairo_stroke_to_path (cairo_t *cr);
-	// */
-
-	// cairo_public void
-	// cairo_close_path (cairo_t *cr);
-
-	// cairo_public void
-	// cairo_path_extents (cairo_t *cr,
-	// 		    double *x1, double *y1,
-	// 		    double *x2, double *y2);
-
-	// /* Painting functions */
-	// cairo_public void
-	// cairo_paint (cairo_t *cr);
-
-	// cairo_public void
-	// cairo_paint_with_alpha (cairo_t *cr,
-	// 			double   alpha);
+	// Rectangle List (cairo_rectangle_list_t)
+	// Tags Logical structure tagging functions
+	// Glypth allocate
+	// cairo_font_type_t
+	// FUNCTIONs
+	// cairo_set_font_matrix
+	// cairo_get_font_matrix
+	// cairo_set_font_options
+	// cairo_get_font_options
+	// cairo_set_font_face
+	// cairo_get_font_face
+	// cairo_set_scaled_font
+	// cairo_get_scaled_font
+	// cairo_show_glyphs
+	// cairo_show_text_glyphs
+	// cairo_text_path
+	// cairo_glyph_path
+	// cairo_glyph_extents
+	// cairo_font_extents
+	// cairo_font_face_reference
+	// cairo_font_face_destroy
+	// cairo_font_face_get_reference_count
+	// cairo_font_face_status
+	// Cairo status
+	// cairo path
+	// device type
+	// cairo_surface_observer_mode_t
+	// cairo_pattern_type_t
+	// cairo_filter_t
+	// cairo_region_overlap_t
 
 	// cairo_public void
 	// cairo_mask (cairo_t         *cr,
@@ -316,57 +375,6 @@ class CAIROUE4_API UCairoFunctionLibrary : public UBlueprintFunctionLibrary
 	// 		    double           surface_x,
 	// 		    double           surface_y);
 
-	// cairo_public void
-	// cairo_stroke (cairo_t *cr);
-
-	// cairo_public void
-	// cairo_stroke_preserve (cairo_t *cr);
-
-	// cairo_public void
-	// cairo_fill (cairo_t *cr);
-
-	// cairo_public void
-	// cairo_fill_preserve (cairo_t *cr);
-
-	// cairo_public void
-	// cairo_copy_page (cairo_t *cr);
-
-	// cairo_public void
-	// cairo_show_page (cairo_t *cr);
-
-	// /* Insideness testing */
-	// cairo_public cairo_bool_t
-	// cairo_in_stroke (cairo_t *cr, double x, double y);
-
-	// cairo_public cairo_bool_t
-	// cairo_in_fill (cairo_t *cr, double x, double y);
-
-	// cairo_public cairo_bool_t
-	// cairo_in_clip (cairo_t *cr, double x, double y);
-
-	// /* Rectangular extents */
-	// cairo_public void
-	// cairo_stroke_extents (cairo_t *cr,
-	// 		      double *x1, double *y1,
-	// 		      double *x2, double *y2);
-
-	// cairo_public void
-	// cairo_fill_extents (cairo_t *cr,
-	// 		    double *x1, double *y1,
-	// 		    double *x2, double *y2);
-
-	// /* Clipping */
-	// cairo_public void
-	// cairo_reset_clip (cairo_t *cr);
-
-	// cairo_public void
-	// cairo_clip (cairo_t *cr);
-
-	// cairo_public void
-	// cairo_clip_preserve (cairo_t *cr);
-
-	// cairo_public void
-	// cairo_clip_extents (cairo_t *cr,
-	// 		    double *x1, double *y1,
-	// 		    double *x2, double *y2);
+	UFUNCTION(BlueprintCallable, Category = "Cairo")
+	static void RefreshContextTexture(UCairoContext *Context);
 };
