@@ -4,7 +4,7 @@
 #include "CairoContext.h"
 #include "Engine/Texture2D.h"
 
-UCairoContext *UCairoFunctionLibrary::InitCairoSurface(UObject *WorldContextObject, int Width, int Height)
+UCairoContext *UCairoFunctionLibrary::Create(UObject *WorldContextObject, int Width, int Height)
 {
 	UCairoContext &Context = *NewObject<UCairoContext>(WorldContextObject);
 	Context.Width = Width;
@@ -20,7 +20,6 @@ UCairoContext *UCairoFunctionLibrary::InitCairoSurface(UObject *WorldContextObje
 
 	Context.bIsInitialized = true;
 	Context.Texture = UTexture2D::CreateTransient(Context.Width, Context.Height);
-	Context.Texture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
 	Context.Texture->SRGB = 0;
 
 	return &Context;
@@ -39,7 +38,7 @@ void UCairoFunctionLibrary::RefreshContextTexture(UCairoContext *Context)
 	Context->Texture->UpdateResource();
 }
 
-void UCairoFunctionLibrary::DestroyContext(UCairoContext *Context)
+void UCairoFunctionLibrary::Destroy(UCairoContext *Context)
 {
 	Context->Cleanup();
 }

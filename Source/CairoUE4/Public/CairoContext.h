@@ -13,7 +13,7 @@
  */
 class UTexture2D;
 
-UCLASS()
+UCLASS(BlueprintType)
 class CAIROUE4_API UCairoContext : public UObject
 {
 	GENERATED_BODY()
